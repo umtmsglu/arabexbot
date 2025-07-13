@@ -1,9 +1,13 @@
 import telebot
 from datetime import datetime
+import os
+from dotenv import load_dotenv
 
-BOT_TOKEN = 'BOT_TOKEN'
+# .env'den verileri çek
+load_dotenv()
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 CHANNEL_USERNAME = '@arabexilan'
-ADMIN_ID = 1081862641  # @haykigrafik
+ADMIN_ID = int(os.getenv('ADMIN_ID'))
 
 bot = telebot.TeleBot(BOT_TOKEN)
 user_data = {}
