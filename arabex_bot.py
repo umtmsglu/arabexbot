@@ -3,11 +3,23 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 
-# .env'den verileri çek
+# .env değişkenlerini yükle
 load_dotenv()
+
+# Debug amaçlı yazdır (ilk deploy için)
+print("BOT_TOKEN:", os.getenv("BOT_TOKEN"))
+print("ADMIN_ID:", os.getenv("ADMIN_ID"))
+
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 CHANNEL_USERNAME = '@arabexilan'
-ADMIN_ID = int(os.getenv('ADMIN_ID'))
+
+# ADMIN_ID güvenli dönüşüm
+ADMIN_ID_ENV = os.getenv('ADMIN_ID')
+try:
+    ADMIN_ID = int(ADMIN_ID_ENV)
+except (TypeError, ValueError):
+    print("❌ ADMIN_ID düzgün alınamadı, varsayılan atanıyor.")
+    ADMIN_ID = 1081862641  # senin ID'in
 
 bot = telebot.TeleBot(BOT_TOKEN)
 user_data = {}
@@ -44,7 +56,7 @@ def send_help(message):
     )
     bot.send_message(message.chat.id, help_text, parse_mode="Markdown")
 
-# Marka ve model ayrı
+# Marka ve model ayrı alınır
 @bot.message_handler(func=lambda msg: msg.chat.id in user_data and 'marka' not in user_data[msg.chat.id])
 def marka(message):
     user_data[message.chat.id]['marka'] = message.text
@@ -173,5 +185,5 @@ def callback(call):
     bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=None)
     bot.answer_callback_query(call.id)
 
-# Botu başlat
+# Botu çalıştır
 bot.polling()
