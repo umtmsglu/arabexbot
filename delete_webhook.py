@@ -1,9 +1,16 @@
+import os
+
 import requests
+from dotenv import load_dotenv
 
-BOT_TOKEN = '7709920480:AAGZVlaONRsP0iNEPWrix1J5iLJV7-oWtSM'
+load_dotenv()
 
-url = f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook"
-response = requests.get(url)
+bot_token = os.getenv("BOT_TOKEN")
+if not bot_token:
+    raise RuntimeError("BOT_TOKEN bulunamadı. .env dosyasını kontrol edin.")
+
+url = f"https://api.telegram.org/bot{bot_token}/deleteWebhook"
+response = requests.get(url, timeout=30)
 
 if response.status_code == 200:
     print("✅ Webhook başarıyla silindi.")
